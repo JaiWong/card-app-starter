@@ -23,7 +23,7 @@ export default function CardForm({
         <span>Image URL</span>
         <input
           name="card_pic"
-          placeholder="https://example.com/image.png"
+          placeholder="https://www.dreamworks.com/images/temp/explore/trolls/branch/troll-hero.png"
           value={values?.card_pic ?? ""}
           onChange={onChange}
         />
