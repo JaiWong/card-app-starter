@@ -9,6 +9,50 @@ export default function EditCard() {
     - handle form submission to call updateCard API
     - handle loading, busy, and error states
     - style as a form UI */
+    const [values, setValues] = useState(null); // null = loading
+    const [loading, setLoading] = useState(true);
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState("");
 
-  return <main></main>;
+    useEffect(()=>{
+      async function loadCard() {
+        try{
+          const cards = await getCards
+          const card = cards.find((card)=>String(card.id) === String(id));
+
+          if (!card){
+            setError("Card not found");
+          } else {
+            setValues(card);
+          }
+        }catch (err){
+          setError("Failed to load card");
+        }finally{
+          setBusy(false);
+        }
+      }
+
+       if (loading) {
+        return <main className="page">Loading...</main>;
+      }
+      if (!values){
+        return<main className="page"></main>
+      }    })
+
+
+  return(
+     <main className="page page-form">
+      <h2>Edit card</h2>
+
+
+      <CardForm
+        values={values}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        busy={busy}
+        error={error}
+        submitText="Update"
+        />
+        </main>
+  );
 }
