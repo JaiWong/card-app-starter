@@ -13,7 +13,6 @@ export default function Card({ card, onDelete, busy }) {
     <article className="card">
       <div className="card-media">
         {pic ? (
-          // keep image with alt
           <img src={pic} alt={name} className="card-image" />
         ) : (
           <div className="card-image placeholder">No image</div>
