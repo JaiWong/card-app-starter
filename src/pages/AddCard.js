@@ -16,10 +16,25 @@ export default function AddCard() {
   const navigate = useNavigate();
 
   function handleChange(e) {
-    // jairus,
+    const {name, value} = e.target
+    setValues((prev) =>({
+      ...prev,
+      [name]: value,
+    }));
   }
 
   async function handleSubmit(e) {
+    e.preventDefault();
+
+    setBusy(true);
+    try{
+      await addCard(values);
+      navigate("/cards");
+    }catch (err){
+      setError(err.message)
+    }finally{
+      setBusy(false);
+    }
     // jairus goes here
   }
 
