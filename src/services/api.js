@@ -25,11 +25,15 @@ async function handleResponse(res) {
 }
 
 export async function getCards() {
-  // GET /allcards (provided as reference)
-  const res = await fetch(`${API_URL}/allcards`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/allcards`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  } catch (err) {
+    throw new Error("Network error: " + (err.message || err));
+  }
 }
+
 
 export async function addCard(card) {
   const res = await fetch(`${API_URL}/addcard`, {
