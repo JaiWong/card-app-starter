@@ -22,7 +22,7 @@ export default function AddCard() {
       [name]: value,
     }));
   }
-
+ 
   async function handleSubmit(e) {
     e.preventDefault();
 
