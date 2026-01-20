@@ -9,6 +9,7 @@ export default function EditCard() {
     - handle form submission to call updateCard API
     - handle loading, busy, and error states
     - style as a form UI */
+    /*
     const [values, setValues] = useState(null); // null = loading
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
@@ -54,5 +55,6 @@ export default function EditCard() {
         submitText="Update"
         />
         </main>
-  );
+  );*/
+  
 }

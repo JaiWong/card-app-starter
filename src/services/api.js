@@ -25,8 +25,10 @@ async function handleResponse(res) {
 }
 
 export async function getCards() {
+  // GET /allcards (provided as reference)
   const res = await fetch(`${API_URL}/allcards`);
-  return handleResponse(res);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
 }
 
 export async function addCard(card) {
