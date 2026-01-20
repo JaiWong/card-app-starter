@@ -2,62 +2,75 @@ import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import { getCards, deleteCard } from "../services/api";
 
+function getId(card) {
+  return card?.id ?? card?.card_id ?? card?._id ?? "";
+}
+
 export default function CardList() {
- 
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
+  const [busyId, setBusyId] = useState(null);
   const [error, setError] = useState("");
- 
+
   async function load() {
+    setError("");
     setLoading(true);
     try {
       const data = await getCards();
-      setCards(data);
-    } catch (error) {
-      console.error("Failed to load cards", error);
-      setError("Failed to load cards");
+      // assume data is array
+      setCards(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      setError(err?.message ?? "Failed to load cards");
     } finally {
       setLoading(false);
     }
   }
- 
+
   useEffect(() => {
     load();
   }, []);
- 
+
   async function handleDelete(card) {
-    setBusy(true);
-    setError("");
+    const id = getId(card);
+    if (!id) return;
+    if (!window.confirm("Delete this card?")) return;
+
+    setBusyId(id);
     try {
-      // delete from backend
-      const res = await deleteCard(card.id);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
- 
-      // remove from local state
-      setCards((prevCards) => prevCards.filter((c) => c.id !== card.id));
-    } catch (error) {
-      console.error("Failed to delete card", error);
-      setError("Failed to delete card");
+      await deleteCard(id);
+      // remove from local list
+      setCards((prev) => prev.filter((c) => getId(c) !== id));
+    } catch (err) {
+      console.error(err);
+      setError(err?.message ?? "Failed to delete card");
     } finally {
-      setBusy(false);
+      setBusyId(null);
     }
   }
- 
+
   return (
-    <main>
-      <div>
-        {cards.map((card) => (
-          <Card
-            key={card.id}
-            card={card}
-            onDelete={handleDelete}
-            busy={loading}
-            s
-            disabled={busy}
-          />
-        ))}
-      </div>
+    <main className="page page-list">
+      <h2>All Cards</h2>
+
+      {loading ? (
+        <p>Loading cards…</p>
+      ) : error ? (
+        <div className="error">{error}</div>
+      ) : cards.length === 0 ? (
+        <p>No cards yet. Try adding one.</p>
+      ) : (
+        <section className="cards-grid">
+          {cards.map((card) => (
+            <Card
+              key={getId(card) || JSON.stringify(card)}
+              card={card}
+              onDelete={handleDelete}
+              busy={busyId === getId(card)}
+            />
+          ))}
+        </section>
+      )}
     </main>
   );
 }
