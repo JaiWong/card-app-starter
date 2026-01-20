@@ -9,7 +9,10 @@ export default function EditCard() {
     - handle form submission to call updateCard API
     - handle loading, busy, and error states
     - style as a form UI */
-    /*
+
+    const { id } = useParams();
+    const navigate = useNavigate();
+    
     const [values, setValues] = useState(null); // null = loading
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
@@ -18,8 +21,8 @@ export default function EditCard() {
     useEffect(()=>{
       async function loadCard() {
         try{
-          const cards = await getCards
-          const card = cards.find((card)=>String(card.id) === String(id));
+          const cards = await getCards();
+          const card = cards.find((c)=>String(c.id) === String(id));
 
           if (!card){
             setError("Card not found");
@@ -29,32 +32,54 @@ export default function EditCard() {
         }catch (err){
           setError("Failed to load card");
         }finally{
-          setBusy(false);
+          setLoading(false);
         }
       }
 
-       if (loading) {
-        return <main className="page">Loading...</main>;
-      }
-      if (!values){
-        return<main className="page"></main>
-      }    })
+      loadCard();
+    },[id]);
+//input
+    function handleChange(e){
+      const { name, value } = e.target;
+      setValues((prev) => ({...prev,
+        [name]:value,
+      }));
+    }
+//form submit
+    async function handleSubmit(e){
+      e.preventDefault();
+      setBusy(true);
+      setError("")
 
+    try{
+      await updateCard(id, values);
+      navigate("/cards");
+    } catch (err) { 
+      setError(err.message || "Failed to update card");
+    } finally{
+      setBusy(false);
+    }}
 
-  return(
-     <main className="page page-form">
-      <h2>Edit card</h2>
+    if (loading) { 
+      return <p>Loading ur card</p>
+    }
 
+    //error
+    if (!values){
+      return <p className="form-error">{error}</p>
+    }
 
-      <CardForm
+    return(
+      <div>
+        <h1>Edit Card</h1>
+        <CardForm
         values={values}
         onChange={handleChange}
         onSubmit={handleSubmit}
         busy={busy}
         error={error}
         submitText="Update"
-        />
-        </main>
-  );*/
-  
-}
+      />
+    </div>
+    );
+  }
