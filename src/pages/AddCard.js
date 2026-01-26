@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import CardForm from "../components/CardForm";
 import { addCard } from "../services/api";
 
+
+
 export default function AddCard() {
   /* TODO: Complete the AddCard page
     - display a form for adding a new card (use the CardForm component to display the form)
@@ -22,6 +24,12 @@ export default function AddCard() {
       [name]: value,
     }));
   }
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) navigate("/login");
+}, [navigate]);
+
  
   async function handleSubmit(e) {
     e.preventDefault();
